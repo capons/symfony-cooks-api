@@ -1,0 +1,8 @@
+#default:
+#    path: /
+#    methods: [OPTIONS]
+app:
+    resource: "@AppBundle/Controller/"
+    type:     annotation
+
+

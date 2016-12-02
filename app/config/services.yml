@@ -1,0 +1,74 @@
+# Learn more about services, parameters and containers at
+# http://symfony.com/doc/current/book/service_container.html
+parameters:
+#    parameter_name: value
+    manager.class: AppBundle\Entity\Manager\BaseManager
+    manager.user.entity: AppBundle\Entity\User
+services:
+  resp:
+    class: AppBundle\Helper\ResponseGenerator
+    arguments: ['@jms_serializer']
+  auth:
+    class: AppBundle\Service\AuthService
+    arguments: ['@doctrine','@service_container']
+  user:
+    class: AppBundle\Service\UserService
+    arguments: ['@doctrine','@service_container']
+  role:
+    class: AppBundle\Service\RoleService
+    arguments: ['@doctrine','@service_container']
+  role_permission:
+    class: AppBundle\Service\RolePermissionService
+    arguments: ['@doctrine','@service_container']
+  department:
+    class: AppBundle\Service\DepartmentService
+    arguments: ['@doctrine','@service_container']
+  article:
+    class: AppBundle\Service\ArticleService
+    arguments: ['@doctrine', '@service_container']
+  allergen:
+    class: AppBundle\Service\AllergenService
+    arguments: ['@doctrine', '@service_container']
+  supplier:
+    class: AppBundle\Service\SupplierService
+    arguments: ['@doctrine', '@service_container']
+  classroom:
+    class: AppBundle\Service\ClassroomService
+    arguments: ['@doctrine', '@service_container']
+  document:
+    class: AppBundle\Service\DocumentService
+    arguments: ['@doctrine', '@service_container']
+  category:
+    class: AppBundle\Service\CategoryService
+    arguments: ['@doctrine', '@service_container']
+  client:
+    class: AppBundle\Service\ClientService
+    arguments: ['@doctrine', '@service_container']
+  access:
+    class: AppBundle\Service\AccessService
+    arguments: ['@doctrine', '@service_container']
+  article_group:
+    class: AppBundle\Service\ArticleGroupService
+    arguments: ['@doctrine', '@service_container']
+  app.tokens.action_listener:
+        class: AppBundle\EventListener\RequestListener
+        arguments: ['@annotation_reader','@auth','@jms_serializer','@validator', '@resp', '@service_container']
+        tags:
+  #          - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+  #          - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+  #          - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+  em:
+        alias: doctrine.orm.entity_manager
+
+  # Managers
+  manager.user:
+      class: %manager.class%
+      arguments: ["%manager.user.entity%","@doctrine"]
+#    service_name:
+#        class: AppBundle\Directory\ClassName
+#        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+  api_exception_subscriber:
+      class: AppBundle\EventListener\ApiExceptionSubscriber
+      arguments: ['@jms_serializer', '@service_container']
+      tags:
+          - { name: kernel.event_subscriber }
